@@ -26,7 +26,8 @@ namespace TrackerAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Exercise>>> GetExercises()
         {
-            return Ok(await _exerciseRepository.GetExerciseList());
+            var exercises = await _exerciseRepository.GetExerciseList();
+            return Ok(exercises);
         }
 
         // GET: api/Exercises/5
@@ -37,7 +38,7 @@ namespace TrackerAPI.Controllers
 
             if(result == null)
             {
-                return NotFound();
+                return NotFound("Exercise not found.");
             }
 
             return Ok(result);
@@ -55,7 +56,7 @@ namespace TrackerAPI.Controllers
 
             await _exerciseRepository.Update(id, exercise);
 
-            return Accepted();
+            return Accepted("Exercise updated.");
         }
 
         // POST: api/Exercises
@@ -63,10 +64,7 @@ namespace TrackerAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Exercise>> CreateExercise([FromBody]Exercise exercise)
         {
-            if(exercise == null)
-            {
-                return BadRequest();
-            }
+            //Should there be a bad request option here??
             
             var createdExercise = await _exerciseRepository.Add(exercise);
 
@@ -82,10 +80,12 @@ namespace TrackerAPI.Controllers
 
             if (exercise == null)
             {
-                return NotFound();
+                return NotFound("Exercise not found.");
             }
 
-            return Ok(await _exerciseRepository.Delete(id));
+            var result = await _exerciseRepository.Delete(id);
+
+            return Ok();
         }
 
     }
